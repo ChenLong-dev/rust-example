@@ -2,6 +2,8 @@
 rust study and rust's lib study
 
 ## 教程
+- [yobrave](https://github.com/chinanf-boy)
+- [Rust 中文资源](https://github.com/rust-lang-cn)
 - [Rust 程序设计语言](https://kaisery.github.io/trpl-zh-cn/title-page.html)
 - [The Cargo Book](https://llever.com/cargo-book-zh/index.zh.html)
 
