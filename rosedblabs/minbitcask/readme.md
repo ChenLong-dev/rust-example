@@ -1,6 +1,6 @@
 # minbitcask
 
-[](https://github.com/rosedblabs/rust-practice/tree/main/mini-bitcask-rs)
+[minbitcask](https://github.com/rosedblabs/rust-practice/tree/main/mini-bitcask-rs)
 基于 bitcask 存储模型的极简 KV 磁盘存储引擎，300 行代码实现了最核心的逻辑，简单易懂，你的第一个 Rust 实战项目！通过此项目可以学习到 Rust 大多数基础知识，例如：
 
 - 数据类型，数组、整型等

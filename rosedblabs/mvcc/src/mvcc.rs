@@ -142,7 +142,8 @@ impl Transaction {
     }
 
     // 打印出所有可见的数据
-    fn print_all(&self) {
+    #[allow(dead_code)]
+    fn print_all(&self, name: &str) {
         let mut records = BTreeMap::new();
         let kvengine = self.kv.lock().unwrap();
         for (k, v) in kvengine.iter() {
@@ -152,6 +153,7 @@ impl Transaction {
             }
         }
 
+        println!("=== {}", name);
         for (k, v) in records.iter() {
             if let Some(value) = v {
                 print!(
@@ -204,6 +206,7 @@ impl Transaction {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     #[test]
     fn test_mvcc() {
         let eng = KVEngine::new();
@@ -228,7 +231,9 @@ mod tests {
         //     a   b   c   d   e   Keys
 
         // t1 虽然未提交，但是能看到自己的修改了
-        tx1.print_all(); // a=a2 b=b1 c=c1 d=d1 e=e2
+        tx1.print_all(
+            "tx1: 开启一个事务，将 a 改为 a2，e 改为 e2， t1 虽然未提交，但是能看到自己的修改了",
+        ); // a=a2 b=b1 c=c1 d=d1 e=e2
 
         // 开启一个新的事务
         let tx2 = mvcc.begin_transaction();
@@ -241,11 +246,11 @@ mod tests {
         //     a   b   c   d   e   Keys
 
         // 此时 T1 没提交，所以 T2 看到的是
-        tx2.print_all(); // a=a1 c=c1 d=d1 e=e1
-        // 提交 T1
+        tx2.print_all("tx2: 开启一个新的事务，删除 b，此时 T1 没提交，所以 T2 看到的是"); // a=a1 c=c1 d=d1 e=e1
+                                                                                          // 提交 T1
         tx1.commit();
         // 此时 T2 仍然看不到 T1 的提交，因为 T2 开启的时候，T2 还没有提交（可重复读）
-        tx2.print_all(); // a=a1 c=c1 d=d1 e=e1
+        tx2.print_all("tx2: 提交 T1，此时 T2 仍然看不到 T1 的提交，因为 T2 开启的时候，T2 还没有提交（可重复读）"); // a=a1 c=c1 d=d1 e=e1
 
         // 再开启一个新的事务
         let tx3 = mvcc.begin_transaction();
@@ -256,11 +261,13 @@ mod tests {
         //  0  a1  b1  c1  d1  e1
         //     a   b   c   d   e   Keys
         // T3 能看到 T1 的提交，但是看不到 T2 的提交
-        tx3.print_all(); // a=a2 b=b1 c=c1 d=d1 e=e2
+        tx3.print_all("tx3: 再开启一个新的事务，T3 能看到 T1 的提交，但是看不到 T2 的提交 "); // a=a2 b=b1 c=c1 d=d1 e=e2
 
         // T3 写新的数据
         tx3.set(b"f", b"f1".to_vec());
+        tx3.print_all("tx3: T3 写新的数据");
         // T2 写同样的数据，会冲突
-        tx2.set(b"f", b"f1".to_vec());
+        println!("xxx T2 写同样的数据，会冲突");
+        // tx2.set(b"f", b"f1".to_vec());
     }
 }

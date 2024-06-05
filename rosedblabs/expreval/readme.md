@@ -1,4 +1,8 @@
-# 表达式解析计算
+# expreval
+[expreval](https://github.com/rosedblabs/rust-practice/tree/main/expr-eval)
+
+表达式解析计算
+
 根据运算符优先级来进行表达式计算，算法看起来非常简洁优雅，非常巧妙的利用优先级来解决运算的顺序和结合等问题。
 
 完整的代码也只有 200 多行，比较适合用来练手，通过这个项目，可以学习到：
